@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,7 @@ interface Team {
   name: string;
 }
 
-export default function NewProjectPage() {
+function NewProjectForm() {
   const searchParams = useSearchParams();
   const defaultTeamId = searchParams.get("team");
   
@@ -144,6 +144,14 @@ export default function NewProjectPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function NewProjectPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
+      <NewProjectForm />
+    </Suspense>
   );
 }
 

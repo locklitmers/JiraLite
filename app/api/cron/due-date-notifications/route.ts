@@ -5,6 +5,9 @@ import { db } from "@/lib/db";
 // to send due date notifications
 // Call this endpoint once per day
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function GET(request: NextRequest) {
   try {
     // Verify cron secret (optional but recommended for security)
@@ -54,7 +57,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const notifications: { userId: string; type: string; title: string; message: string; link: string }[] = [];
+    const notifications: { userId: string; type: "ISSUE_UPDATED"; title: string; message: string; link: string }[] = [];
 
     // Create notifications for issues due tomorrow
     for (const issue of issuesDueTomorrow) {

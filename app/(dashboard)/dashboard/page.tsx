@@ -15,15 +15,52 @@ export default async function DashboardPage() {
     return null;
   }
 
-  const teamIds = user.teamMembers.map((tm) => tm.teamId);
+  const teamIds = user.teamMembers.map((tm: any) => tm.teamId);
+
+  // Type for issues with relations
+  type IssueWithRelations = {
+    id: string;
+    number: number;
+    title: string;
+    type: string;
+    priority: string;
+    projectId: string;
+    statusId: string;
+    assigneeId: string | null;
+    dueDate: Date | null;
+    updatedAt: Date;
+    project: { id: string; key: string; name: string };
+    status: { id: string; name: string; color: string; isClosed: boolean };
+    assignee: { id: string; name: string | null; avatarUrl: string | null } | null;
+  };
+
+  // Type for comments with issue and project relations
+  type CommentWithIssue = {
+    id: string;
+    content: string;
+    createdAt: Date;
+    updatedAt: Date;
+    issueId: string;
+    authorId: string;
+    issue: {
+      id: string;
+      number: number;
+      title: string;
+      project: {
+        id: string;
+        key: string;
+        name: string;
+      };
+    };
+  };
 
   // Default values in case of error
   let projectCount = 0;
-  let recentIssues: Awaited<ReturnType<typeof db.issue.findMany>> = [];
-  let myAssignedIssues: Awaited<ReturnType<typeof db.issue.findMany>> = [];
-  let issuesDueToday: Awaited<ReturnType<typeof db.issue.findMany>> = [];
-  let issuesDueSoon: Awaited<ReturnType<typeof db.issue.findMany>> = [];
-  let myRecentComments: Awaited<ReturnType<typeof db.issueComment.findMany>> = [];
+  let recentIssues: IssueWithRelations[] = [];
+  let myAssignedIssues: IssueWithRelations[] = [];
+  let issuesDueToday: IssueWithRelations[] = [];
+  let issuesDueSoon: IssueWithRelations[] = [];
+  let myRecentComments: CommentWithIssue[] = [];
   let issueStats = { open: 0, completed: 0, urgent: 0, myAssigned: 0 };
 
   const today = new Date();
@@ -40,37 +77,76 @@ export default async function DashboardPage() {
     });
 
     // Get recent issues with all needed data
-    recentIssues = await db.issue.findMany({
+    recentIssues = (await db.issue.findMany({
       where: {
         project: { teamId: { in: teamIds } },
         deletedAt: null,
       },
       include: {
-        project: true,
-        status: true,
-        assignee: true,
+        project: {
+          select: {
+            id: true,
+            key: true,
+            name: true,
+          },
+        },
+        status: {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+            isClosed: true,
+          },
+        },
+        assignee: {
+          select: {
+            id: true,
+            name: true,
+            avatarUrl: true,
+          },
+        },
       },
       orderBy: { updatedAt: "desc" },
       take: 5,
-    });
+    })) as IssueWithRelations[];
 
     // My assigned issues (not closed)
-    myAssignedIssues = await db.issue.findMany({
+    myAssignedIssues = (await db.issue.findMany({
       where: {
         assigneeId: user.id,
         status: { isClosed: false },
         deletedAt: null,
       },
       include: {
-        project: true,
-        status: true,
+        project: {
+          select: {
+            id: true,
+            key: true,
+            name: true,
+          },
+        },
+        status: {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+            isClosed: true,
+          },
+        },
+        assignee: {
+          select: {
+            id: true,
+            name: true,
+            avatarUrl: true,
+          },
+        },
       },
       orderBy: { updatedAt: "desc" },
       take: 10,
-    });
+    })) as IssueWithRelations[];
 
     // Issues due today
-    issuesDueToday = await db.issue.findMany({
+    issuesDueToday = (await db.issue.findMany({
       where: {
         assigneeId: user.id,
         dueDate: {
@@ -81,13 +157,33 @@ export default async function DashboardPage() {
         deletedAt: null,
       },
       include: {
-        project: true,
-        status: true,
+        project: {
+          select: {
+            id: true,
+            key: true,
+            name: true,
+          },
+        },
+        status: {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+            isClosed: true,
+          },
+        },
+        assignee: {
+          select: {
+            id: true,
+            name: true,
+            avatarUrl: true,
+          },
+        },
       },
-    });
+    })) as IssueWithRelations[];
 
     // Issues due within 7 days
-    issuesDueSoon = await db.issue.findMany({
+    issuesDueSoon = (await db.issue.findMany({
       where: {
         assigneeId: user.id,
         dueDate: {
@@ -98,12 +194,32 @@ export default async function DashboardPage() {
         deletedAt: null,
       },
       include: {
-        project: true,
-        status: true,
+        project: {
+          select: {
+            id: true,
+            key: true,
+            name: true,
+          },
+        },
+        status: {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+            isClosed: true,
+          },
+        },
+        assignee: {
+          select: {
+            id: true,
+            name: true,
+            avatarUrl: true,
+          },
+        },
       },
       orderBy: { dueDate: "asc" },
       take: 5,
-    });
+    })) as IssueWithRelations[];
 
     // Get all issues for stats calculation
     const allIssues = await db.issue.findMany({
@@ -120,7 +236,7 @@ export default async function DashboardPage() {
 
     // Calculate stats from the single query result
     issueStats = allIssues.reduce(
-      (acc, issue) => {
+      (acc: any, issue: any) => {
         if (issue.status.isClosed) {
           acc.completed++;
         } else {
@@ -138,7 +254,7 @@ export default async function DashboardPage() {
     );
 
     // My recent comments
-    myRecentComments = await db.issueComment.findMany({
+    myRecentComments = (await db.issueComment.findMany({
       where: {
         authorId: user.id,
         deletedAt: null,
@@ -147,14 +263,31 @@ export default async function DashboardPage() {
           deletedAt: null,
         },
       },
-      include: {
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        issueId: true,
+        authorId: true,
         issue: {
-          include: { project: true },
+          select: {
+            id: true,
+            number: true,
+            title: true,
+            project: {
+              select: {
+                id: true,
+                key: true,
+                name: true,
+              },
+            },
+          },
         },
       },
       orderBy: { createdAt: "desc" },
       take: 5,
-    });
+    })) as CommentWithIssue[];
   } catch (error) {
     console.error("Dashboard data fetch error:", error);
     // Continue with default values
@@ -455,7 +588,7 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {user.teamMembers.map((tm) => (
+              {user.teamMembers.map((tm: any) => (
                 <Link
                   key={tm.id}
                   href={`/teams/${tm.team.slug}`}

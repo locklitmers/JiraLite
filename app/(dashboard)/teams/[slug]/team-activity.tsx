@@ -44,7 +44,7 @@ export function TeamActivity({ teamId }: TeamActivityProps) {
     async function loadActivities() {
       setIsLoading(true);
       const result = await getTeamActivities(teamId);
-      if (result.activities) {
+      if (result?.activities) {
         setActivities(result.activities);
       }
       setIsLoading(false);

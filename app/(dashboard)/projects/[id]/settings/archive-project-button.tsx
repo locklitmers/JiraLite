@@ -21,7 +21,7 @@ export function ArchiveProjectButton({ projectId, archived }: ArchiveProjectButt
     const result = await archiveProject(projectId);
     if (result?.error) {
       toast.error(result.error);
-    } else {
+    } else if (result?.archived !== undefined) {
       toast.success(result.archived ? "Project archived" : "Project restored");
       router.refresh();
     }

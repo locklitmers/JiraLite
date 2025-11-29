@@ -8,7 +8,7 @@ import { toast } from "sonner";
 export function MarkReadButton({ notificationId }: { notificationId: string }) {
   async function handleClick() {
     const result = await markNotificationRead(notificationId);
-    if (result.success) {
+    if (result?.success) {
       toast.success("Marked as read");
     }
   }
@@ -24,7 +24,7 @@ export function MarkReadButton({ notificationId }: { notificationId: string }) {
 export function MarkAllReadButton() {
   async function handleClick() {
     const result = await markAllNotificationsRead();
-    if (result.success) {
+    if (result?.success) {
       toast.success("All notifications marked as read");
     }
   }

@@ -40,7 +40,7 @@ export async function createIssue(formData: FormData) {
     return { error: "Project not found" };
   }
 
-  const membership = project.team.members.find((m) => m.userId === user.id);
+  const membership = project.team.members.find((m: any) => m.userId === user.id);
   if (!membership) {
     return { error: "You don't have access to this project" };
   }
@@ -76,7 +76,7 @@ export async function createIssue(formData: FormData) {
     await db.notification.create({
       data: {
         userId: data.assigneeId,
-        type: "ISSUE_ASSIGNED",
+        type: "ISSUE_ASSIGNED" as const,
         title: "Issue Assigned",
         message: `You were assigned to ${project.key}-${nextNumber}: ${data.title}`,
         link: `/projects/${projectId}/issues/${issue.id}`,
@@ -102,7 +102,7 @@ export async function updateIssue(issueId: string, formData: FormData) {
     return { error: "Issue not found" };
   }
 
-  const membership = issue.project.team.members.find((m) => m.userId === user.id);
+  const membership = issue.project.team.members.find((m: any) => m.userId === user.id);
   if (!membership) {
     return { error: "You don't have access to this issue" };
   }
@@ -155,7 +155,7 @@ export async function updateIssue(issueId: string, formData: FormData) {
       await db.notification.create({
         data: {
           userId: result.data.assigneeId,
-          type: "ISSUE_ASSIGNED",
+          type: "ISSUE_ASSIGNED" as const,
           title: "Issue Assigned",
           message: `You were assigned to ${issue.project.key}-${issue.number}: ${issue.title}`,
           link: `/projects/${issue.projectId}/issues/${issue.id}`,
@@ -202,7 +202,7 @@ export async function deleteIssue(issueId: string) {
     return { error: "Issue not found" };
   }
 
-  const membership = issue.project.team.members.find((m) => m.userId === user.id);
+  const membership = issue.project.team.members.find((m: any) => m.userId === user.id);
   if (!membership) {
     return { error: "You don't have access to this issue" };
   }
@@ -247,7 +247,7 @@ export async function moveIssue(data: { issueId: string; statusId: string }) {
     return { error: "Issue not found" };
   }
 
-  const membership = issue.project.team.members.find((m) => m.userId === user.id);
+  const membership = issue.project.team.members.find((m: any) => m.userId === user.id);
   if (!membership) {
     return { error: "You don't have access to this issue" };
   }
@@ -311,7 +311,7 @@ export async function createComment(formData: FormData) {
     return { error: "Issue not found" };
   }
 
-  const membership = issue.project.team.members.find((m) => m.userId === user.id);
+  const membership = issue.project.team.members.find((m: any) => m.userId === user.id);
   if (!membership) {
     return { error: "You don't have access to this issue" };
   }
@@ -338,11 +338,11 @@ export async function createComment(formData: FormData) {
   if (issue.reporterId !== user.id) notifyUsers.add(issue.reporterId);
   if (issue.assigneeId && issue.assigneeId !== user.id) notifyUsers.add(issue.assigneeId);
 
-  for (const userId of notifyUsers) {
+  for (const userId of Array.from(notifyUsers)) {
     await db.notification.create({
       data: {
         userId,
-        type: "ISSUE_COMMENT",
+        type: "ISSUE_COMMENT" as const,
         title: "New Comment",
         message: `${user.name || "Someone"} commented on ${issue.project.key}-${issue.number}`,
         link: `/projects/${issue.projectId}/issues/${issue.id}`,
@@ -408,7 +408,7 @@ export async function deleteComment(commentId: string) {
     return { error: "Comment not found" };
   }
 
-  const membership = comment.issue.project.team.members.find((m) => m.userId === user.id);
+  const membership = comment.issue.project.team.members.find((m: any) => m.userId === user.id);
   if (!membership) {
     return { error: "You don't have access to this comment" };
   }

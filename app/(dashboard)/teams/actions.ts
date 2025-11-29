@@ -365,7 +365,7 @@ export async function updateMemberRole(teamId: string, memberId: string, role: "
   await db.notification.create({
     data: {
       userId: targetMember.userId,
-      type: "TEAM_INVITE", // Using existing type for role changes
+      type: "TEAM_INVITE" as const, // Using existing type for role changes
       title: "Role Changed",
       message: `Your role in ${team?.name} has been changed from ${oldRole} to ${role}`,
       link: `/teams/${team?.slug}`,
@@ -457,7 +457,7 @@ export async function transferOwnership(teamId: string, newOwnerId: string) {
   await db.notification.create({
     data: {
       userId: newOwnerId,
-      type: "TEAM_INVITE",
+      type: "TEAM_INVITE" as const,
       title: "You're now the Team Owner!",
       message: `${user.name || user.email} has transferred ownership of ${team.name} to you`,
       link: `/teams/${team.slug}`,

@@ -22,7 +22,7 @@ export function FavoriteButton({ projectId, isFavorite }: FavoriteButtonProps) {
     const result = await toggleFavorite(projectId);
     if (result?.error) {
       toast.error(result.error);
-    } else {
+    } else if (result?.isFavorite !== undefined) {
       setFavorite(result.isFavorite);
       toast.success(result.isFavorite ? "Added to favorites" : "Removed from favorites");
       router.refresh();

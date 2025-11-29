@@ -284,14 +284,14 @@ async function main() {
     data: [
       {
         userId: user2.id,
-        type: "ISSUE_ASSIGNED",
+        type: "ISSUE_ASSIGNED" as const,
         title: "Issue Assigned",
         message: "You were assigned to JIRA-2: Create Kanban board component",
         link: `/projects/${project.id}`,
       },
       {
         userId: user3.id,
-        type: "ISSUE_ASSIGNED",
+        type: "ISSUE_ASSIGNED" as const,
         title: "Issue Assigned",
         message: "You were assigned to JIRA-3: Bug: Issue modal not closing on save",
         link: `/projects/${project.id}`,
