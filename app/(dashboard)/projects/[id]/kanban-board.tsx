@@ -104,13 +104,14 @@ export function KanbanBoard({ projectId, projectKey, statuses, isArchived = fals
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-6">
+      <div className="p-3 sm:p-6">
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex gap-4 min-w-max">
+          {/* Mobile: Vertical stack, Desktop: Horizontal scroll */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:min-w-max">
             {columns.map((column) => (
               <div
                 key={column.id}
-                className="w-80 flex-shrink-0 flex flex-col bg-muted/30 rounded-lg"
+                className="w-full sm:w-80 sm:flex-shrink-0 flex flex-col bg-muted/30 rounded-lg"
               >
                 {/* Column Header */}
                 <div 
@@ -150,7 +151,7 @@ export function KanbanBoard({ projectId, projectKey, statuses, isArchived = fals
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className={`flex-1 p-2 min-h-[200px] transition-colors ${
+                      className={`flex-1 p-2 min-h-[100px] sm:min-h-[200px] transition-colors ${
                         snapshot.isDraggingOver ? "bg-muted/50" : ""
                       }`}
                     >

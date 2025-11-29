@@ -70,9 +70,9 @@ export function InviteMemberDialog({ teamId }: InviteMemberDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogTrigger asChild>
-        <Button>
-          <UserPlus className="w-4 h-4 mr-2" />
-          Invite Member
+        <Button size="sm" className="text-xs sm:text-sm">
+          <UserPlus className="w-4 h-4 sm:mr-2" />
+          <span className="hidden sm:inline">Invite Member</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

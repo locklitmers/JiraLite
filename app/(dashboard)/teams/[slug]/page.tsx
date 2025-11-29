@@ -60,7 +60,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
   const isAdmin = membership.role === "OWNER" || membership.role === "ADMIN";
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
       <Link
         href="/teams"
         className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
@@ -70,61 +70,61 @@ export default async function TeamPage({ params }: TeamPageProps) {
       </Link>
 
       {/* Team Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl shrink-0">
             {team.name.charAt(0).toUpperCase()}
           </div>
-          <div>
-            <h1 className="text-3xl font-bold">{team.name}</h1>
-            <p className="text-muted-foreground mt-1">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-3xl font-bold truncate">{team.name}</h1>
+            <p className="text-muted-foreground mt-1 text-sm sm:text-base truncate">
               {team.description || "No description"}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" asChild>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button variant="outline" size="sm" asChild className="text-xs sm:text-sm">
             <Link href={`/teams/${team.slug}/statistics`}>
-              <BarChart3 className="w-4 h-4 mr-2" />
-              Statistics
+              <BarChart3 className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Statistics</span>
             </Link>
           </Button>
           {isAdmin && <InviteMemberDialog teamId={team.id} />}
         </div>
       </div>
 
-      <Tabs defaultValue="projects" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="projects" className="gap-2">
-            <FolderKanban className="w-4 h-4" />
-            Projects
+      <Tabs defaultValue="projects" className="space-y-4 sm:space-y-6">
+        <TabsList className="w-full sm:w-auto overflow-x-auto flex-nowrap justify-start">
+          <TabsTrigger value="projects" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+            <FolderKanban className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden xs:inline">Projects</span>
           </TabsTrigger>
-          <TabsTrigger value="members" className="gap-2">
-            <Users className="w-4 h-4" />
-            Members
+          <TabsTrigger value="members" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+            <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden xs:inline">Members</span>
           </TabsTrigger>
-          <TabsTrigger value="activity" className="gap-2">
-            <Activity className="w-4 h-4" />
-            Activity
+          <TabsTrigger value="activity" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+            <Activity className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden xs:inline">Activity</span>
           </TabsTrigger>
           {isAdmin && (
-            <TabsTrigger value="settings" className="gap-2">
-              <Settings className="w-4 h-4" />
-              Settings
+            <TabsTrigger value="settings" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+              <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Settings</span>
             </TabsTrigger>
           )}
         </TabsList>
 
         {/* Projects Tab */}
-        <TabsContent value="projects" className="space-y-6">
-          <div className="flex items-center justify-between">
+        <TabsContent value="projects" className="space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold">Projects</h2>
-              <p className="text-sm text-muted-foreground">
+              <h2 className="text-lg sm:text-xl font-semibold">Projects</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {team.projects.length} project{team.projects.length !== 1 ? "s" : ""} in this team
               </p>
             </div>
-            <Button asChild>
+            <Button asChild size="sm" className="w-full sm:w-auto">
               <Link href={`/projects/new?team=${team.id}`}>
                 <Plus className="w-4 h-4 mr-2" />
                 New Project
@@ -134,13 +134,13 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
           {team.projects.length === 0 ? (
             <Card>
-              <CardContent className="py-12 text-center">
-                <FolderKanban className="w-12 h-12 mx-auto text-muted-foreground/50" />
-                <h3 className="mt-4 text-lg font-semibold">No projects yet</h3>
-                <p className="text-muted-foreground mt-2">
+              <CardContent className="py-8 sm:py-12 text-center">
+                <FolderKanban className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground/50" />
+                <h3 className="mt-4 text-base sm:text-lg font-semibold">No projects yet</h3>
+                <p className="text-muted-foreground mt-2 text-sm">
                   Create your first project in this team.
                 </p>
-                <Button className="mt-4" asChild>
+                <Button className="mt-4" size="sm" asChild>
                   <Link href={`/projects/new?team=${team.id}`}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Project
@@ -149,24 +149,24 @@ export default async function TeamPage({ params }: TeamPageProps) {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {team.projects.map((project) => (
                 <Card key={project.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
+                  <CardHeader className="p-4 sm:p-6">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline">{project.key}</Badge>
+                      <Badge variant="outline" className="text-xs">{project.key}</Badge>
                     </div>
-                    <CardTitle className="mt-2">{project.name}</CardTitle>
-                    <CardDescription className="line-clamp-2">
+                    <CardTitle className="mt-2 text-base sm:text-lg">{project.name}</CardTitle>
+                    <CardDescription className="line-clamp-2 text-xs sm:text-sm">
                       {project.description || "No description"}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                    <div className="flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
                       <span>{project._count.issues} issues</span>
                       <span>Created {formatDate(project.createdAt)}</span>
                     </div>
-                    <Button variant="ghost" className="w-full mt-4" asChild>
+                    <Button variant="ghost" className="w-full mt-3 sm:mt-4" size="sm" asChild>
                       <Link href={`/projects/${project.id}`}>View Project</Link>
                     </Button>
                   </CardContent>

@@ -26,10 +26,13 @@ export function DashboardShell({ user, teams, currentTeamId, children }: Dashboa
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar
-        user={user}
-        onMobileMenuClick={() => setMobileMenuOpen(true)}
-      />
+      {/* Navbar - Sticky at top */}
+      <div className="sticky top-0 z-50">
+        <Navbar
+          user={user}
+          onMobileMenuClick={() => setMobileMenuOpen(true)}
+        />
+      </div>
       <div className="flex flex-1">
         <Sidebar 
           teams={teams} 

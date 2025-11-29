@@ -86,45 +86,46 @@ export function TeamMembers({ team, members, invites, currentUserId, isAdmin }: 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle>Team Members</CardTitle>
-          <CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Team Members</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             {members.length} member{members.length !== 1 ? "s" : ""} in this team
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3 sm:space-y-4">
           {members.map((member) => (
             <div
               key={member.id}
-              className="flex items-center justify-between p-4 rounded-lg border"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 rounded-lg border gap-3"
             >
-              <div className="flex items-center gap-4">
-                <Avatar className="h-10 w-10">
+              <div className="flex items-center gap-3 min-w-0">
+                <Avatar className="h-9 w-9 sm:h-10 sm:w-10 shrink-0">
                   <AvatarImage src={member.user.avatarUrl || undefined} />
-                  <AvatarFallback>{getInitials(member.user.name)}</AvatarFallback>
+                  <AvatarFallback className="text-xs sm:text-sm">{getInitials(member.user.name)}</AvatarFallback>
                 </Avatar>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium">{member.user.name}</p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-medium text-sm sm:text-base truncate">{member.user.name}</p>
                     {member.userId === currentUserId && (
                       <span className="text-xs text-muted-foreground">(you)</span>
                     )}
+                    <Badge variant={getRoleBadgeVariant(member.role)} className="text-xs shrink-0">
+                      {member.role}
+                    </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">{member.user.email}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{member.user.email}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Badge variant={getRoleBadgeVariant(member.role)}>
-                  {member.role}
-                </Badge>
+              <div className="flex items-center gap-2 sm:gap-3 justify-end shrink-0">
                 {isAdmin && member.userId !== currentUserId && member.role !== "OWNER" && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8"
                         disabled={isLoading === member.id || isLoading === `transfer-${member.userId}`}
                       >
                         <MoreHorizontal className="h-4 w-4" />
@@ -172,6 +173,7 @@ export function TeamMembers({ team, members, invites, currentUserId, isAdmin }: 
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="text-xs sm:text-sm h-8"
                     onClick={handleLeaveTeam}
                     disabled={isLoading === "leave"}
                   >
@@ -187,30 +189,30 @@ export function TeamMembers({ team, members, invites, currentUserId, isAdmin }: 
       {/* Pending Invites */}
       {invites.length > 0 && isAdmin && (
         <Card>
-          <CardHeader>
-            <CardTitle>Pending Invitations</CardTitle>
-            <CardDescription>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">Pending Invitations</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
               {invites.length} pending invite{invites.length !== 1 ? "s" : ""}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0 space-y-3 sm:space-y-4">
             {invites.map((invite) => (
               <div
                 key={invite.id}
-                className="flex items-center justify-between p-4 rounded-lg border bg-muted/50"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 rounded-lg border bg-muted/50 gap-3"
               >
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                    <Clock className="h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   </div>
-                  <div>
-                    <p className="font-medium">{invite.email}</p>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-sm sm:text-base truncate">{invite.email}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       Invited {formatRelativeTime(invite.createdAt)}
                     </p>
                   </div>
                 </div>
-                <Badge variant="outline">{invite.role}</Badge>
+                <Badge variant="outline" className="text-xs w-fit shrink-0">{invite.role}</Badge>
               </div>
             ))}
           </CardContent>

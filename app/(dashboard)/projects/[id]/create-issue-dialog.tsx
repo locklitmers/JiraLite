@@ -208,9 +208,10 @@ export function CreateIssueDialog({
       if (!open) resetForm();
     }}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Create Issue
+        <Button size="sm" className="text-xs sm:text-sm">
+          <Plus className="w-4 h-4 sm:mr-2" />
+          <span className="hidden sm:inline">Create Issue</span>
+          <span className="sm:hidden">New</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

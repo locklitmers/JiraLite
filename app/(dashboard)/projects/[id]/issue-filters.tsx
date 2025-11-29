@@ -80,15 +80,15 @@ export function IssueFilters({ statuses, teamMembers, labels }: IssueFiltersProp
   }, [search]);
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
       {/* Search */}
-      <div className="relative">
+      <div className="relative flex-1 sm:flex-none">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Search issues..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9 w-[200px]"
+          className="pl-9 w-full sm:w-[180px]"
         />
       </div>
 
@@ -101,30 +101,31 @@ export function IssueFilters({ statuses, teamMembers, labels }: IssueFiltersProp
           updateParams("sortBy", val);
         }}
       >
-        <SelectTrigger className="w-[160px]">
-          <ArrowUpDown className="w-4 h-4 mr-2" />
-          <SelectValue placeholder="Sort by" />
+        <SelectTrigger className="w-[120px] sm:w-[140px]">
+          <ArrowUpDown className="w-4 h-4 sm:mr-2" />
+          <span className="hidden sm:inline"><SelectValue placeholder="Sort" /></span>
+          <span className="sm:hidden text-xs"><SelectValue placeholder="Sort" /></span>
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="default">Default</SelectItem>
-          <SelectItem value="created_desc">Newest first</SelectItem>
-          <SelectItem value="created_asc">Oldest first</SelectItem>
-          <SelectItem value="updated_desc">Recently updated</SelectItem>
-          <SelectItem value="dueDate_asc">Due date (earliest)</SelectItem>
-          <SelectItem value="dueDate_desc">Due date (latest)</SelectItem>
-          <SelectItem value="priority_desc">Priority (high first)</SelectItem>
-          <SelectItem value="priority_asc">Priority (low first)</SelectItem>
+          <SelectItem value="created_desc">Newest</SelectItem>
+          <SelectItem value="created_asc">Oldest</SelectItem>
+          <SelectItem value="updated_desc">Updated</SelectItem>
+          <SelectItem value="dueDate_asc">Due (early)</SelectItem>
+          <SelectItem value="dueDate_desc">Due (late)</SelectItem>
+          <SelectItem value="priority_desc">Priority ↓</SelectItem>
+          <SelectItem value="priority_asc">Priority ↑</SelectItem>
         </SelectContent>
       </Select>
 
       {/* Filters Popover */}
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-1 sm:gap-2 px-2 sm:px-3">
             <Filter className="w-4 h-4" />
-            Filters
+            <span className="hidden sm:inline">Filters</span>
             {activeFilters > 0 && (
-              <Badge variant="secondary" className="ml-1 px-1.5">
+              <Badge variant="secondary" className="ml-1 px-1.5 text-xs">
                 {activeFilters}
               </Badge>
             )}
@@ -294,11 +295,11 @@ export function IssueFilters({ statuses, teamMembers, labels }: IssueFiltersProp
         </PopoverContent>
       </Popover>
 
-      {/* Active filter badges */}
+      {/* Active filter badges - hidden on mobile to save space */}
       {activeFilters > 0 && (
-        <div className="flex items-center gap-1">
+        <div className="hidden sm:flex items-center gap-1 flex-wrap">
           {status && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge variant="secondary" className="gap-1 text-xs">
               {statuses.find((s) => s.id === status)?.name}
               <X
                 className="w-3 h-3 cursor-pointer"
@@ -310,7 +311,7 @@ export function IssueFilters({ statuses, teamMembers, labels }: IssueFiltersProp
             </Badge>
           )}
           {assignee && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge variant="secondary" className="gap-1 text-xs">
               {assignee === "unassigned"
                 ? "Unassigned"
                 : teamMembers.find((m) => m.id === assignee)?.name || "Assignee"}
@@ -324,7 +325,7 @@ export function IssueFilters({ statuses, teamMembers, labels }: IssueFiltersProp
             </Badge>
           )}
           {priority && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge variant="secondary" className="gap-1 text-xs">
               {priority}
               <X
                 className="w-3 h-3 cursor-pointer"
@@ -336,7 +337,7 @@ export function IssueFilters({ statuses, teamMembers, labels }: IssueFiltersProp
             </Badge>
           )}
           {label && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge variant="secondary" className="gap-1 text-xs">
               {labels.find((l) => l.id === label)?.name}
               <X
                 className="w-3 h-3 cursor-pointer"

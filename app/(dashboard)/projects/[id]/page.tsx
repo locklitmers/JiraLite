@@ -140,33 +140,33 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3 sm:px-6 py-3 sm:py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <Link
               href="/projects"
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline">{project.key}</Badge>
-                <h1 className="text-xl font-bold">{project.name}</h1>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="text-xs shrink-0">{project.key}</Badge>
+                <h1 className="text-base sm:text-xl font-bold truncate">{project.name}</h1>
                 {project.archived && (
-                  <Badge variant="secondary">
+                  <Badge variant="secondary" className="text-xs shrink-0">
                     <Archive className="w-3 h-3 mr-1" />
                     Archived
                   </Badge>
                 )}
                 <FavoriteButton projectId={project.id} isFavorite={isFavorite} />
               </div>
-              <p className="text-sm text-muted-foreground mt-0.5">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 truncate">
                 {project.team.name}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0 justify-end">
             {!project.archived && (
               <CreateIssueDialog
                 projectId={project.id}
@@ -177,7 +177,7 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
               />
             )}
             {isAdmin && (
-              <Button variant="outline" size="icon" asChild>
+              <Button variant="outline" size="icon" className="h-9 w-9" asChild>
                 <Link href={`/projects/${project.id}/settings`}>
                   <Settings className="w-4 h-4" />
                 </Link>
@@ -189,14 +189,14 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
 
       {/* Tabs */}
       <Tabs defaultValue="board" className="flex-1 flex flex-col">
-        <div className="border-b px-6 py-2 flex items-center justify-between">
-          <TabsList>
-            <TabsTrigger value="board" className="gap-2">
-              <LayoutGrid className="w-4 h-4" />
+        <div className="border-b px-3 sm:px-6 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="board" className="gap-1 sm:gap-2 text-xs sm:text-sm flex-1 sm:flex-none">
+              <LayoutGrid className="w-3 h-3 sm:w-4 sm:h-4" />
               Board
             </TabsTrigger>
-            <TabsTrigger value="dashboard" className="gap-2">
-              <BarChart3 className="w-4 h-4" />
+            <TabsTrigger value="dashboard" className="gap-1 sm:gap-2 text-xs sm:text-sm flex-1 sm:flex-none">
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
               Dashboard
             </TabsTrigger>
           </TabsList>

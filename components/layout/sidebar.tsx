@@ -171,8 +171,8 @@ export function Sidebar({ teams, currentTeamId, mobileOpen, onMobileOpenChange }
         </SheetContent>
       </Sheet>
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col border-r bg-muted/30 shrink-0">
+      {/* Desktop Sidebar - Sticky below navbar */}
+      <aside className="hidden md:flex w-64 flex-col border-r bg-muted/30 shrink-0 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto">
         <SidebarContent teams={teams} currentTeamId={currentTeamId} />
       </aside>
     </>

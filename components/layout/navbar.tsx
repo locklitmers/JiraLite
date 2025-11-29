@@ -29,7 +29,7 @@ export function Navbar({ user, onMobileMenuClick }: NavbarProps) {
   const { setTheme, theme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center justify-between gap-2 px-3 sm:px-4 md:px-6">
         {/* Mobile: Hamburger Menu | Desktop: Logo */}
         <div className="flex items-center gap-2 shrink-0">
