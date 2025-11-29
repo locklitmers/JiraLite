@@ -94,3 +94,17 @@ export function getTypeIcon(type: string): string {
   }
 }
 
+export function getAppUrl(): string {
+  // Ưu tiên NEXT_PUBLIC_APP_URL nếu có (set trong .env hoặc Vercel env vars)
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+  // Fallback: Vercel tự động cung cấp VERCEL_URL khi deploy
+  // Ví dụ: "your-app.vercel.app" -> "https://your-app.vercel.app"
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Fallback cuối: local development
+  return "http://localhost:3000";
+}
+

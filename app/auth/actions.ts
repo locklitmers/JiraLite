@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { signInSchema, signUpSchema, resetPasswordSchema, updatePasswordSchema } from "@/lib/validations/auth";
 import { sendEmail, getConfirmEmailTemplate } from "@/lib/email";
+import { getAppUrl } from "@/lib/utils";
 
 export async function signUp(formData: FormData) {
   const rawData = {
@@ -147,7 +148,8 @@ export async function signIn(formData: FormData) {
     return { error: error.message };
   }
 
-  redirect("/dashboard");
+  // Return success - let client component handle redirect to avoid 307 conflict
+  return { success: true };
 }
 
 export async function signInWithGoogle() {
@@ -156,7 +158,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+      redirectTo: `${getAppUrl()}/auth/callback`,
     },
   });
 
@@ -189,7 +191,7 @@ export async function resetPassword(formData: FormData) {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/confirm?type=recovery`,
+    redirectTo: `${getAppUrl()}/auth/confirm?type=recovery`,
   });
 
   if (error) {
