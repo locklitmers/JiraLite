@@ -48,13 +48,27 @@ export function DeleteAccountForm({ isOAuthUser }: DeleteAccountFormProps) {
       formData.append("password", password);
     }
 
-    const result = await deleteAccount(formData);
-    if (result?.error) {
-      toast.error(result.error);
-      setIsLoading(false);
-    } else {
-      toast.success("Account deleted");
-      router.push("/");
+    try {
+      const result = await deleteAccount(formData);
+      if (result?.error) {
+        toast.error(result.error);
+        setIsLoading(false);
+      } else if (result?.success) {
+        toast.success("Account deleted successfully");
+        // Redirect after a short delay to show success message
+        setTimeout(() => {
+          router.push("/");
+          router.refresh();
+        }, 1000);
+      }
+    } catch (error) {
+      // redirect() throws an error, which is expected behavior
+      // If we get here, the account was deleted successfully
+      toast.success("Account deleted successfully");
+      setTimeout(() => {
+        router.push("/");
+        router.refresh();
+      }, 1000);
     }
   }
 

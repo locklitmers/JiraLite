@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth/get-user";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -116,15 +116,35 @@ export async function deleteAccount(formData: FormData) {
     }
   }
 
-  // Soft delete user
-  await db.user.update({
-    where: { id: user.id },
-    data: { deletedAt: new Date() },
-  });
+  // Store user ID before deletion
+  const userId = user.id;
 
-  // Sign out
+  // Sign out first
   await supabase.auth.signOut();
 
-  redirect("/");
+  try {
+    // Delete user from Supabase Auth using Admin API
+    if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const adminClient = createAdminClient();
+      const { error: deleteAuthError } = await adminClient.auth.admin.deleteUser(userId);
+      
+      if (deleteAuthError) {
+        console.error("Error deleting user from Supabase Auth:", deleteAuthError);
+        // Continue with database deletion even if Auth deletion fails
+      }
+    }
+
+    // Hard delete user from database (xóa hoàn toàn)
+    await db.user.delete({
+      where: { id: userId },
+    });
+
+    // Return success - let client component handle redirect
+    // Don't use redirect() here as it throws an error that gets caught in try/catch
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    return { error: "Failed to delete account. Please try again." };
+  }
 }
 
