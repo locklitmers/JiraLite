@@ -192,18 +192,18 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
       {/* Welcome Section */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-2xl sm:text-3xl font-bold">
             Welcome back, {user.name?.split(" ")[0] || "there"}!
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground mt-1 text-sm sm:text-base">
             Here&apos;s what&apos;s happening with your projects today.
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/projects/new">
             <Plus className="w-4 h-4 mr-2" />
             New Project
@@ -212,17 +212,17 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.name}>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-xl ${stat.bgColor}`}>
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className={`p-2 sm:p-3 rounded-xl ${stat.bgColor}`}>
+                  <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">{stat.name}</p>
-                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{stat.name}</p>
+                  <p className="text-xl sm:text-2xl font-bold">{stat.value}</p>
                 </div>
               </div>
             </CardContent>
@@ -230,31 +230,29 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* My Assigned Issues */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle>My Assigned Issues</CardTitle>
-              <CardDescription>Issues assigned to you</CardDescription>
-            </div>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">My Assigned Issues</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Issues assigned to you</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
             {myAssignedIssues.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
+              <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm">
                 No issues assigned to you
               </p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {myAssignedIssues.slice(0, 5).map((issue) => (
                   <Link
                     key={issue.id}
                     href={`/projects/${issue.project.id}/issues/${issue.id}`}
-                    className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                    className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border hover:bg-muted/50 transition-colors"
                   >
-                    <span>{getTypeIcon(issue.type)}</span>
+                    <span className="text-sm">{getTypeIcon(issue.type)}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate text-sm">{issue.title}</p>
+                      <p className="font-medium truncate text-xs sm:text-sm">{issue.title}</p>
                       <p className="text-xs text-muted-foreground">
                         {issue.project.key}-{issue.number}
                       </p>
@@ -262,7 +260,7 @@ export default async function DashboardPage() {
                     <Badge
                       variant="outline"
                       style={{ borderColor: issue.status.color, color: issue.status.color }}
-                      className="text-xs"
+                      className="text-xs shrink-0"
                     >
                       {issue.status.name}
                     </Badge>
@@ -275,31 +273,29 @@ export default async function DashboardPage() {
 
         {/* Issues Due Soon */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <CalendarClock className="w-5 h-5" />
-                Due Soon
-              </CardTitle>
-              <CardDescription>Issues due within 7 days</CardDescription>
-            </div>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <CalendarClock className="w-4 h-4 sm:w-5 sm:h-5" />
+              Due Soon
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Issues due within 7 days</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
             {issuesDueSoon.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
+              <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm">
                 No upcoming deadlines
               </p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {issuesDueSoon.map((issue) => (
                   <Link
                     key={issue.id}
                     href={`/projects/${issue.project.id}/issues/${issue.id}`}
-                    className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                    className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border hover:bg-muted/50 transition-colors"
                   >
-                    <span>{getTypeIcon(issue.type)}</span>
+                    <span className="text-sm">{getTypeIcon(issue.type)}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate text-sm">{issue.title}</p>
+                      <p className="font-medium truncate text-xs sm:text-sm">{issue.title}</p>
                       <p className="text-xs text-muted-foreground">
                         {issue.project.key}-{issue.number}
                       </p>
@@ -310,7 +306,7 @@ export default async function DashboardPage() {
                           ? "destructive"
                           : "secondary"
                       }
-                      className="text-xs"
+                      className="text-xs shrink-0"
                     >
                       {issue.dueDate && formatDate(issue.dueDate)}
                     </Badge>
@@ -324,24 +320,24 @@ export default async function DashboardPage() {
 
       {/* Recent Issues */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="p-4 sm:p-6 flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates from your projects</CardDescription>
+            <CardTitle className="text-base sm:text-lg">Recent Activity</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Latest updates from your projects</CardDescription>
           </div>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild className="text-xs sm:text-sm">
             <Link href="/projects">
               View all
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
             </Link>
           </Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
           {recentIssues.length === 0 ? (
-            <div className="text-center py-12">
-              <FolderKanban className="w-12 h-12 mx-auto text-muted-foreground/50" />
-              <h3 className="mt-4 text-lg font-semibold">No issues yet</h3>
-              <p className="text-muted-foreground mt-2">
+            <div className="text-center py-8 sm:py-12">
+              <FolderKanban className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground/50" />
+              <h3 className="mt-4 text-base sm:text-lg font-semibold">No issues yet</h3>
+              <p className="text-muted-foreground mt-2 text-sm">
                 Create your first project to start tracking issues.
               </p>
               <Button className="mt-4" asChild>
@@ -352,44 +348,48 @@ export default async function DashboardPage() {
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {recentIssues.map((issue) => (
                 <Link
                   key={issue.id}
                   href={`/projects/${issue.project.id}/issues/${issue.id}`}
-                  className="flex items-center gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors"
+                  className="block p-3 sm:p-4 rounded-lg border hover:bg-muted/50 transition-colors"
                 >
-                  <span className="text-lg">{getTypeIcon(issue.type)}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">
-                        {issue.project.key}-{issue.number}
-                      </span>
-                      <Badge
-                        variant="secondary"
-                        className={getPriorityColor(issue.priority)}
-                      >
-                        {issue.priority}
-                      </Badge>
+                  {/* Mobile Layout */}
+                  <div className="flex items-start gap-3">
+                    <span className="text-base sm:text-lg shrink-0">{getTypeIcon(issue.type)}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs sm:text-sm text-muted-foreground">
+                          {issue.project.key}-{issue.number}
+                        </span>
+                        <Badge
+                          variant="secondary"
+                          className={`${getPriorityColor(issue.priority)} text-xs`}
+                        >
+                          {issue.priority}
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          style={{ borderColor: issue.status.color, color: issue.status.color }}
+                          className="text-xs"
+                        >
+                          {issue.status.name}
+                        </Badge>
+                      </div>
+                      <p className="font-medium truncate text-sm sm:text-base mt-1">{issue.title}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        {issue.assignee && (
+                          <Avatar className="h-5 w-5 sm:h-6 sm:w-6">
+                            <AvatarImage src={issue.assignee.avatarUrl || undefined} />
+                            <AvatarFallback className="text-xs">{getInitials(issue.assignee.name)}</AvatarFallback>
+                          </Avatar>
+                        )}
+                        <span className="text-xs text-muted-foreground">
+                          {formatRelativeTime(issue.updatedAt)}
+                        </span>
+                      </div>
                     </div>
-                    <p className="font-medium truncate">{issue.title}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge
-                      variant="outline"
-                      style={{ borderColor: issue.status.color, color: issue.status.color }}
-                    >
-                      {issue.status.name}
-                    </Badge>
-                    {issue.assignee && (
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={issue.assignee.avatarUrl || undefined} />
-                        <AvatarFallback>{getInitials(issue.assignee.name)}</AvatarFallback>
-                      </Avatar>
-                    )}
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">
-                      {formatRelativeTime(issue.updatedAt)}
-                    </span>
                   </div>
                 </Link>
               ))}
@@ -400,32 +400,32 @@ export default async function DashboardPage() {
 
       {/* My Recent Comments */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5" />
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
             My Recent Comments
           </CardTitle>
-          <CardDescription>Your latest comments on issues</CardDescription>
+          <CardDescription className="text-xs sm:text-sm">Your latest comments on issues</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
           {myRecentComments.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
+            <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm">
               No comments yet
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {myRecentComments.map((comment) => (
                 <Link
                   key={comment.id}
                   href={`/projects/${comment.issue.project.id}/issues/${comment.issue.id}`}
-                  className="block p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                  className="block p-2 sm:p-3 rounded-lg border hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                     <span>{comment.issue.project.key}-{comment.issue.number}</span>
                     <span>•</span>
                     <span>{formatRelativeTime(comment.createdAt)}</span>
                   </div>
-                  <p className="text-sm line-clamp-2" dangerouslySetInnerHTML={{ 
+                  <p className="text-xs sm:text-sm line-clamp-2" dangerouslySetInnerHTML={{ 
                     __html: comment.content.replace(/<[^>]*>/g, ' ').substring(0, 100) + (comment.content.length > 100 ? '...' : '')
                   }} />
                 </Link>
@@ -437,15 +437,15 @@ export default async function DashboardPage() {
 
       {/* Teams List */}
       <Card>
-        <CardHeader>
-          <CardTitle>My Teams</CardTitle>
-          <CardDescription>Teams you belong to</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">My Teams</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">Teams you belong to</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
           {user.teamMembers.length === 0 ? (
-            <div className="text-center py-8">
-              <Users className="w-12 h-12 mx-auto text-muted-foreground/50" />
-              <p className="text-muted-foreground mt-2">You're not in any team yet</p>
+            <div className="text-center py-6 sm:py-8">
+              <Users className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-muted-foreground/50" />
+              <p className="text-muted-foreground mt-2 text-sm">You're not in any team yet</p>
               <Button className="mt-4" asChild>
                 <Link href="/teams/new">
                   <Plus className="w-4 h-4 mr-2" />
@@ -454,18 +454,18 @@ export default async function DashboardPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {user.teamMembers.map((tm) => (
                 <Link
                   key={tm.id}
                   href={`/teams/${tm.team.slug}`}
-                  className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                  className="flex items-center gap-3 p-2 sm:p-3 rounded-lg border hover:bg-muted/50 transition-colors"
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-sm sm:text-base">
                     {tm.team.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{tm.team.name}</p>
+                    <p className="font-medium truncate text-sm sm:text-base">{tm.team.name}</p>
                     <Badge variant="outline" className="text-xs">
                       {tm.role}
                     </Badge>

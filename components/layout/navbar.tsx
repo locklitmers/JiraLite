@@ -11,11 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, Moon, Sun, Search, Kanban } from "lucide-react";
+import { Bell, Moon, Sun, Kanban, Menu } from "lucide-react";
 import { signOut } from "@/app/auth/actions";
 import { getInitials } from "@/lib/utils";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 
 interface NavbarProps {
   user: {
@@ -23,38 +22,44 @@ interface NavbarProps {
     email: string;
     avatarUrl: string | null;
   };
+  onMobileMenuClick?: () => void;
 }
 
-export function Navbar({ user }: NavbarProps) {
+export function Navbar({ user, onMobileMenuClick }: NavbarProps) {
   const { setTheme, theme } = useTheme();
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center gap-4 px-6">
-        {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 mr-4">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-            <Kanban className="w-5 h-5 text-white" />
-          </div>
-          <span className="font-bold text-lg hidden md:block">Jira Lite</span>
-        </Link>
-
-        {/* Search */}
-        <div className="flex-1 max-w-md">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search issues..."
-              className="pl-9 bg-muted/50"
-            />
-          </div>
+      <div className="flex h-14 items-center justify-between gap-2 px-3 sm:px-4 md:px-6">
+        {/* Mobile: Hamburger Menu | Desktop: Logo */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Mobile Hamburger - replaces logo on mobile */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden h-9 w-9"
+            onClick={onMobileMenuClick}
+          >
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+          
+          {/* Desktop Logo */}
+          <Link href="/dashboard" className="hidden md:flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <Kanban className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-lg">Jira Lite</span>
+          </Link>
         </div>
 
-        <div className="flex items-center gap-2 ml-auto">
+        {/* Right Actions */}
+        <div className="flex items-center gap-1 sm:gap-2">
           {/* Theme Toggle */}
           <Button
             variant="ghost"
             size="icon"
+            className="h-9 w-9"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
             <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
@@ -63,7 +68,7 @@ export function Navbar({ user }: NavbarProps) {
           </Button>
 
           {/* Notifications */}
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="h-9 w-9" asChild>
             <Link href="/notifications">
               <Bell className="h-5 w-5" />
               <span className="sr-only">Notifications</span>

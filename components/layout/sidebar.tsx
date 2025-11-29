@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Sheet,
+  SheetContent,
+} from "@/components/ui/sheet";
+import {
   LayoutDashboard,
   FolderKanban,
   Users,
@@ -21,6 +26,7 @@ import {
   Plus,
   ChevronDown,
   CheckCircle,
+  Kanban,
 } from "lucide-react";
 
 interface Team {
@@ -32,6 +38,8 @@ interface Team {
 interface SidebarProps {
   teams: Team[];
   currentTeamId?: string;
+  mobileOpen?: boolean;
+  onMobileOpenChange?: (open: boolean) => void;
 }
 
 const navigation = [
@@ -41,12 +49,24 @@ const navigation = [
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
-export function Sidebar({ teams, currentTeamId }: SidebarProps) {
+function SidebarContent({ teams, currentTeamId, onNavigate, showLogo = false }: SidebarProps & { onNavigate?: () => void; showLogo?: boolean }) {
   const pathname = usePathname();
   const currentTeam = teams.find((t) => t.id === currentTeamId) || teams[0];
 
   return (
-    <aside className="hidden md:flex w-64 flex-col border-r bg-muted/30">
+    <>
+      {/* Mobile Logo - only show in mobile sidebar */}
+      {showLogo && (
+        <div className="p-4 border-b">
+          <Link href="/dashboard" className="flex items-center gap-2" onClick={onNavigate}>
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <Kanban className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-lg">Jira Lite</span>
+          </Link>
+        </div>
+      )}
+
       {/* Team Selector */}
       <div className="p-4 border-b">
         <DropdownMenu>
@@ -67,6 +87,7 @@ export function Sidebar({ teams, currentTeamId }: SidebarProps) {
                 <Link
                   href={`/teams/${team.slug}`}
                   className="flex items-center justify-between"
+                  onClick={onNavigate}
                 >
                   <span>{team.name}</span>
                   {team.id === currentTeamId && (
@@ -77,7 +98,7 @@ export function Sidebar({ teams, currentTeamId }: SidebarProps) {
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/teams/new" className="flex items-center gap-2">
+              <Link href="/teams/new" className="flex items-center gap-2" onClick={onNavigate}>
                 <Plus className="h-4 w-4" />
                 Create Team
               </Link>
@@ -95,6 +116,7 @@ export function Sidebar({ teams, currentTeamId }: SidebarProps) {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={onNavigate}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   isActive
@@ -115,14 +137,45 @@ export function Sidebar({ teams, currentTeamId }: SidebarProps) {
             Quick Actions
           </p>
           <Button variant="outline" className="w-full justify-start gap-2" asChild>
-            <Link href="/projects/new">
+            <Link href="/projects/new" onClick={onNavigate}>
               <Plus className="h-4 w-4" />
               New Project
             </Link>
           </Button>
         </div>
       </ScrollArea>
-    </aside>
+    </>
+  );
+}
+
+export function Sidebar({ teams, currentTeamId, mobileOpen, onMobileOpenChange }: SidebarProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  // Use external control if provided, otherwise use internal state
+  const isOpen = mobileOpen !== undefined ? mobileOpen : internalOpen;
+  const setIsOpen = onMobileOpenChange || setInternalOpen;
+
+  return (
+    <>
+      {/* Mobile Sidebar Sheet */}
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetContent side="left" className="w-64 p-0">
+          <div className="flex flex-col h-full">
+            <SidebarContent 
+              teams={teams} 
+              currentTeamId={currentTeamId} 
+              onNavigate={() => setIsOpen(false)}
+              showLogo={true}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-64 flex-col border-r bg-muted/30 shrink-0">
+        <SidebarContent teams={teams} currentTeamId={currentTeamId} />
+      </aside>
+    </>
   );
 }
 

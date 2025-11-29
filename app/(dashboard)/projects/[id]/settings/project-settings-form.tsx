@@ -25,9 +25,11 @@ import type { Project } from "@prisma/client";
 
 interface ProjectSettingsFormProps {
   project: Project;
+  isOwner?: boolean;
+  canEdit?: boolean; // Only OWNER can edit
 }
 
-export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
+export function ProjectSettingsForm({ project, isOwner = false, canEdit = false }: ProjectSettingsFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -70,7 +72,7 @@ export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
                 name="name"
                 defaultValue={project.name}
                 required
-                disabled={isLoading}
+                disabled={isLoading || !canEdit}
               />
             </div>
             <div className="space-y-2">
@@ -92,58 +94,67 @@ export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
                 name="description"
                 defaultValue={project.description || ""}
                 rows={4}
-                disabled={isLoading}
+                disabled={isLoading || !canEdit}
               />
             </div>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Save Changes
-            </Button>
+            {canEdit ? (
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Save Changes
+              </Button>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Only the team owner can edit project settings.
+              </p>
+            )}
           </form>
         </CardContent>
       </Card>
 
-      <Card className="border-destructive/50">
-        <CardHeader>
-          <CardTitle className="text-destructive">Danger Zone</CardTitle>
-          <CardDescription>
-            Irreversible and destructive actions
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" disabled={isDeleting}>
-                {isDeleting ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Trash2 className="w-4 h-4 mr-2" />
-                )}
-                Delete Project
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  project <strong>{project.name}</strong> and all associated
-                  issues, comments, and data.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDelete}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                >
+      {/* Danger Zone - Only visible to OWNER */}
+      {isOwner && (
+        <Card className="border-destructive/50">
+          <CardHeader>
+            <CardTitle className="text-destructive">Danger Zone</CardTitle>
+            <CardDescription>
+              Irreversible and destructive actions
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" disabled={isDeleting}>
+                  {isDeleting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4 mr-2" />
+                  )}
                   Delete Project
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </CardContent>
-      </Card>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the
+                    project <strong>{project.name}</strong> and all associated
+                    issues, comments, and data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete Project
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }

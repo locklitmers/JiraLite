@@ -51,6 +51,8 @@ export default async function ProjectSettingsPage({ params }: ProjectSettingsPag
     notFound();
   }
 
+  const isOwner = membership.role === "OWNER";
+
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
@@ -66,32 +68,34 @@ export default async function ProjectSettingsPage({ params }: ProjectSettingsPag
         </div>
       </div>
 
-      <ProjectSettingsForm project={project} />
+      <ProjectSettingsForm project={project} isOwner={isOwner} canEdit={isOwner} />
 
       <StatusManager projectId={project.id} statuses={project.statuses} />
       
       <LabelManager projectId={project.id} labels={project.labels} />
 
-      {/* Danger Zone */}
-      <Card className="border-destructive">
-        <CardHeader>
-          <CardTitle className="text-destructive">Danger Zone</CardTitle>
-          <CardDescription>Irreversible actions</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Archive Project</p>
-              <p className="text-sm text-muted-foreground">
-                {project.archived 
-                  ? "Restore this project to make it active again"
-                  : "Archive this project to make it read-only"}
-              </p>
+      {/* Danger Zone - Only visible to OWNER */}
+      {isOwner && (
+        <Card className="border-destructive">
+          <CardHeader>
+            <CardTitle className="text-destructive">Danger Zone</CardTitle>
+            <CardDescription>Irreversible actions</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Archive Project</p>
+                <p className="text-sm text-muted-foreground">
+                  {project.archived 
+                    ? "Restore this project to make it active again"
+                    : "Archive this project to make it read-only"}
+                </p>
+              </div>
+              <ArchiveProjectButton projectId={project.id} archived={project.archived} />
             </div>
-            <ArchiveProjectButton projectId={project.id} archived={project.archived} />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

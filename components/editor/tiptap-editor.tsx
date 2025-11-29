@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -49,6 +50,16 @@ export function TiptapEditor({
       },
     },
   });
+
+  // Sync editor content when prop changes (e.g., after clearing)
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      // Only reset if content is empty (clearing) or significantly different
+      if (content === "" || content === "<p></p>") {
+        editor.commands.clearContent();
+      }
+    }
+  }, [content, editor]);
 
   if (!editor) {
     return null;

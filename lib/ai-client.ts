@@ -5,8 +5,8 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-// Default model - Llama 3.1 70B is fast and capable
-const DEFAULT_MODEL = "llama-3.1-70b-versatile";
+// Default model - Llama 3.3 70B is the latest and best
+const DEFAULT_MODEL = "llama-3.3-70b-versatile";
 
 interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -43,7 +43,7 @@ export async function chatCompletion({
 
 // Available Groq models (all free!)
 export const GROQ_MODELS = {
-  LLAMA_70B: "llama-3.1-70b-versatile", // Best quality
+  LLAMA_70B: "llama-3.3-70b-versatile", // Best quality (latest)
   LLAMA_8B: "llama-3.1-8b-instant", // Fastest
   MIXTRAL: "mixtral-8x7b-32768", // Good balance
   GEMMA: "gemma2-9b-it", // Google's model
